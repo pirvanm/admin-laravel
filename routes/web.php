@@ -3,13 +3,17 @@
 use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\EntriesController;
 use App\Http\Controllers\SurveysController;
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\CustomersController;
 
-Route::get('/', [SurveysController::class, 'index']);
-Route::post('/' , [SurveysController::class, 'store'])->name('survey.store');
+
 Auth::routes();
 
 Route::get('/dd', function () {     return view('dashboard.admin.usersList'); });
-Route::resource('users',        'UsersController');
+Route::resource('/',        'UsersController');
+Route::resource('/emails',        'MailController');
+Route::resource('/customers',        'CustomersController');
+Route::resource('mail',        'MailController');
 
 Route::resource('dd',  'BreadController');
 Route::group(['middleware' => ['get.menu', 'role:admin']], function () {

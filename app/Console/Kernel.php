@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('word:day')
         ->daily();
+
+        $schedule->command('report:day')
+        ->everyMinute();
     }
 
     /**

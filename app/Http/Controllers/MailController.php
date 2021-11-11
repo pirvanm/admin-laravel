@@ -13,6 +13,31 @@ class MailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function send_mail(Request $request)
+    {
+    	$details = [
+    		'subject' => 'Test Notification mm'
+    	];
+    	
+     
+
+        // Mail::send(['text'=>'mail.fun'], $data, function($message) {
+        //     $message->to('abc@gmail.com', 'Tutorials Point')->subject
+        //        ('Laravel Basic Testing Mail');
+        //     $message->from('xyz@gmail.com','Virat Gandhi');
+        //  });
+
+
+
+        $job = (new \App\Jobs\SendQueueEmail($details))
+        ->delay(now()->addMinutes(1));
+
+        dispatch($job);
+        echo "Mail send successfully !!";
+    }
+
+
     public function index()
     {
         $emailTemplates = EmailTemplate::paginate( 20 );
