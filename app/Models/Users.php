@@ -11,6 +11,11 @@ class Users extends Model
     use SoftDeletes;
     use HasFactory;
 
+    
+    protected $dates = [
+        'deleted_at'
+    ];
+
     /**
      * Get the notes for the users.
      */
@@ -19,7 +24,14 @@ class Users extends Model
         return $this->hasMany('App\Models\Notes');
     }
 
-    protected $dates = [
-        'deleted_at'
-    ];
+    /**
+     * The groups that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function groups() //: BelongsToMany
+    {
+        return $this->belongsToMany(StudentGroup::class, 'user_group', 'user_id', 'group_id')->withTimestamps();
+    }
+
 }

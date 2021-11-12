@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Customers;
+use App\Models\CustomerGroup;
 
 class CustomersController extends Controller
 {
@@ -15,10 +16,22 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        $customers = Customers::latest()->paginate(5);
+       // $customers = Customers::latest()->paginate(5);
+        $customers = Customers::whereNotIn('id', [1])->latest()->paginate(30);
     
         return view('customers.index',compact('customers'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
+    }
+
+    public function getGroup() {
+        $groups = CustomerGroup::latest()->paginate(50);
+        return view('admin.group.index', compact('groups'));
+    }
+
+    public function getGroupForm()
+    {
+
+        return view('admin.group.create');
     }
 
     /**
@@ -30,6 +43,49 @@ class CustomersController extends Controller
     {
         return view('customers.create');
     }
+
+    public function postGroupForm(Request $request)
+    {
+        $group = new CustomerGroup;
+        $group->name = $request->name;
+        $group->active = $request->active == 'active' ? true : false;
+        $group->save();
+
+        return redirect('/admin/customer-group')->with('success', 'Group generated success');
+    }
+
+    public function getAllUsersByGroupId($id)
+    {
+        $group = CustomerGroup::find($id);
+        $users = User::whereHas('groups', function (Builder $query) use ($group) {
+            $query->where('name', $group->name);
+        })->paginate(30);
+        return view('admin.group.customers', compact('group', 'users'));
+    }
+
+    public function getAddUserForm($id)
+    {
+        $group = CustomerGroup::find($id);
+        $users = User::get();
+        return view('admin.group.add-user', compact('group', 'users'));
+    }
+
+    public function getAddUserFormSave(Request $request, $id)
+    {
+        $group = CustomerGroup::find($id);
+        $userid = $request->userid;
+        $group->customers()->attach($userid);
+        return back()->with('success', 'user attached to this group');
+    }
+
+    public function getAddUserFormRemove(Request $request, $id)
+    {
+        $group = CustomerGroup::find($id);
+        $userid = $request->userid;
+        $group->customers()->detach($userid);
+        return back()->with('success', 'user detached to this group');
+    }
+
 
     /**
      * Store a newly created resource in storage.

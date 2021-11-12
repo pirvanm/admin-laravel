@@ -15,7 +15,19 @@ Route::resource('/emails',        'MailController');
 Route::resource('/customers',        'CustomersController');
 Route::resource('mail',        'MailController');
 
-Route::resource('dd',  'BreadController');
+Route::prefix('customer-group')->group(function () {
+    Route::get('/', [CustomerController::class, 'getGroup']);
+    Route::get('/create', [CustomerController::class, 'getGroupForm']);
+    Route::post('/create', [CustomerController::class, 'postGroupForm']);
+
+    Route::get('/users/{group_id}', [CustomerController::class, 'getAllUsersByGroupId']);
+
+    Route::get('/users/{group_id}/add', [CustomerController::class, 'getAddUserForm']);
+    Route::post('/users/{group_id}/add', [CustomerController::class, 'getAddUserFormSave']);
+    Route::post('/users/{group_id}/remove', [CustomerController::class, 'getAddUserFormRemove']);
+
+});
+
 Route::group(['middleware' => ['get.menu', 'role:admin']], function () {
     Route::get('/admin', [DashBoardController::class, 'index']);
     Route::get('/admin.chartjson', [DashBoardController::class, 'getCharJsData']);
