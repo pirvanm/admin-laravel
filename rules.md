@@ -9,8 +9,8 @@ The goal is to get an MVP application with the following features:
 ====Sex and birth date sometimes are missed.
  ==== There will be a lot of users.
 
-user shall be able to create, edit and remove customer groups. 
-Single customer may belong to more than one group.
+====user shall be able to create, edit and remove customer groups. 
+===Single customer may belong to more than one group.
 
 -------- user shall be able to create an email template (inc. subject) to be used for customer groups mass sending.
 
